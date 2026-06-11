@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+python-multipart
+
+pymupdf
+
+groq
+
+ollama
+
+python-dotenv
+
+sqlalchemy
+
+pydantic
