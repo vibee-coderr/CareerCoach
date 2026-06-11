@@ -1,0 +1,71 @@
+.resume-container {
+  max-width: 1100px;
+  margin: auto;
+}
+
+.hero {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.input-group {
+  margin-top: 15px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+}
+
+.analyze-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+}
+
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tag {
+  background: #2563eb;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.missing-tag {
+  background: #dc2626;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.roadmap-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+}
+
+.start-btn {
+  margin-top: 20px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: #16a34a;
+  color: white;
+  font-size: 16px;
+}
