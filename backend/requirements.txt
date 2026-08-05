@@ -9,7 +9,7 @@ groq
 ollama
 
 python-dotenv
-
+reportlab
 sqlalchemy
 
 pydantic
