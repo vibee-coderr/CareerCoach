@@ -1,0 +1,43 @@
+.score-card{
+
+background:white;
+
+padding:30px;
+
+margin-top:30px;
+
+text-align:center;
+
+border-radius:15px;
+
+box-shadow:0 5px 15px rgba(0,0,0,.08);
+
+}
+
+.circle{
+
+width:180px;
+
+height:180px;
+
+border-radius:50%;
+
+margin:auto;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+border:12px solid #2563eb;
+
+}
+
+.circle h1{
+
+font-size:42px;
+
+color:#2563eb;
+
+}

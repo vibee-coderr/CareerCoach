@@ -1,0 +1,8 @@
+.upload-card { margin-top: 36px; padding: 30px; }
+.upload-heading { display: flex; gap: 14px; align-items: flex-start; }
+.section-icon { display: grid; flex: 0 0 auto; width: 42px; height: 42px; place-items: center; border-radius: 12px; background: #edf1ff; color: #3e5ddd; font-size: 1.4rem; font-weight: 700; }
+.upload-heading h2 { margin: 0; color: #1f2a44; font: 800 1.25rem "Manrope", sans-serif; letter-spacing: -.03em; }.upload-heading p { margin: 6px 0 0; color: #667085; line-height: 1.5; }
+.form-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px; margin-top: 28px; }
+.file-drop { min-height: 116px; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 18px; border: 1.5px dashed #bdc9ed; border-radius: 12px; color: #344054; text-align: center; cursor: pointer; background: #fbfcff; }.file-drop:hover { border-color: #5573df; background: #f7f9ff; }.file-drop input { position: absolute; width: 1px; height: 1px; opacity: 0; }.file-icon { margin-bottom: 6px; color: #4663dd; font-size: 1.35rem; }.file-drop small { margin-top: 4px; color: #98a2b3; }
+.field-label { display: flex; flex-direction: column; justify-content: center; gap: 9px; color: #344054; font-size: .86rem; font-weight: 700; }.field-label input { width: 100%; border: 1px solid #d8deea; border-radius: 10px; padding: 13px 14px; outline: none; color: #172033; background: white; }.field-label input:focus { border-color: #5b76df; box-shadow: 0 0 0 3px #e9edff; }.analyze-button { margin-top: 24px; min-width: 180px; }
+@media (max-width: 700px) { .upload-card { padding: 22px; }.form-grid { grid-template-columns: 1fr; } }

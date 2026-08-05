@@ -7,8 +7,15 @@ import Interview from "./pages/Interview";
 import Dashboard from "./pages/Dashboard";
 import Summary from "./pages/Summary";
 
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+
 function App() {
+
   return (
+
     <BrowserRouter>
 
       <Navbar />
@@ -18,23 +25,83 @@ function App() {
         <Routes>
 
           <Route
+
+            path="/login"
+
+            element={<Login />}
+
+          />
+
+          <Route
+
+            path="/register"
+
+            element={<Register />}
+
+          />
+
+          <Route
+
             path="/"
-            element={<ResumeAnalysis />}
+
+            element={
+
+              <ProtectedRoute>
+
+                <ResumeAnalysis />
+
+              </ProtectedRoute>
+
+            }
+
           />
 
           <Route
+
             path="/interview"
-            element={<Interview />}
+
+            element={
+
+              <ProtectedRoute>
+
+                <Interview />
+
+              </ProtectedRoute>
+
+            }
+
           />
 
           <Route
+
             path="/dashboard"
-            element={<Dashboard />}
+
+            element={
+
+              <ProtectedRoute>
+
+                <Dashboard />
+
+              </ProtectedRoute>
+
+            }
+
           />
 
           <Route
+
             path="/summary"
-            element={<Summary />}
+
+            element={
+
+              <ProtectedRoute>
+
+                <Summary />
+
+              </ProtectedRoute>
+
+            }
+
           />
 
         </Routes>
@@ -42,7 +109,9 @@ function App() {
       </div>
 
     </BrowserRouter>
+
   );
+
 }
 
 export default App;

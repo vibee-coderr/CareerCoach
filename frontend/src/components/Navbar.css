@@ -1,32 +1,8 @@
-.navbar {
-  background: #1f2937;
-  color: white;
-
-  padding: 15px 30px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-}
-
-.logo {
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.nav-links {
-  display: flex;
-  gap: 20px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: white;
-  transition: 0.3s;
-}
-
-.nav-links a:hover {
-  color: #60a5fa;
-}
+.navbar { position: sticky; top: 0; z-index: 10; height: 72px; padding: 0 max(24px, calc((100% - 1120px)/2)); display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,.9); border-bottom: 1px solid #e9edf5; backdrop-filter: blur(14px); }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: #172033; text-decoration: none; font: 800 1.08rem "Manrope", sans-serif; letter-spacing: -.04em; }
+.brand-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 10px; background: linear-gradient(140deg, #4968e8, #2843ae); color: white; font-size: .9rem; }
+.nav-links { display: flex; align-items: center; gap: 6px; }
+.nav-links a { padding: 9px 12px; color: #667085; border-radius: 8px; text-decoration: none; font-size: .9rem; font-weight: 700; }
+.nav-links a:hover { color: #2947bd; background: #f2f5ff; }
+.nav-links a.active { color: #2947bd; background: #eef2ff; }
+@media (max-width: 580px) { .navbar { height: auto; padding: 14px; gap: 12px; align-items: flex-start; } .nav-links { gap: 0; flex-wrap: wrap; justify-content: flex-end; } .nav-links a { padding: 6px 8px; font-size: .78rem; } }

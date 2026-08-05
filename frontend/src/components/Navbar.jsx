@@ -1,36 +1,102 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 import "./Navbar.css";
 
 function Navbar() {
-  return (
-    <nav className="navbar">
 
-      <div className="logo">
-        AI Career Coach
-      </div>
+    const { user, logout } = useAuth();
 
-      <div className="nav-links">
+    return (
 
-        <Link to="/">
-          Resume Analysis
-        </Link>
+        <header className="navbar">
 
-        <Link to="/interview">
-          Interview
-        </Link>
+            <NavLink
+                to="/"
+                className="brand"
+            >
 
-        <Link to="/dashboard">
-          Dashboard
-        </Link>
+                <span className="brand-mark">
 
-        <Link to="/summary">
-          Summary
-        </Link>
+                    AI
 
-      </div>
+                </span>
 
-    </nav>
-  );
+                <span>
+
+                    AI Career Coach
+
+                </span>
+
+            </NavLink>
+
+            <nav className="nav-links">
+
+                {user ? (
+
+                    <>
+
+                        <NavLink to="/">
+
+                            Resume
+
+                        </NavLink>
+
+                        <NavLink to="/interview">
+
+                            Interview
+
+                        </NavLink>
+
+                        <NavLink to="/dashboard">
+
+                            Dashboard
+
+                        </NavLink>
+
+                        <span className="username">
+
+                            👋 {user.username}
+
+                        </span>
+
+                        <button
+                            className="logout-btn"
+                            onClick={logout}
+                        >
+
+                            Logout
+
+                        </button>
+
+                    </>
+
+                ) : (
+
+                    <>
+
+                        <NavLink to="/login">
+
+                            Login
+
+                        </NavLink>
+
+                        <NavLink to="/register">
+
+                            Register
+
+                        </NavLink>
+
+                    </>
+
+                )}
+
+            </nav>
+
+        </header>
+
+    );
+
 }
 
 export default Navbar;

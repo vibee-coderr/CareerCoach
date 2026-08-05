@@ -1,154 +1,191 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
+
 import "./Dashboard.css";
+
+import CareerScore from "../components/CareerScore";
+import StatCard from "../components/StatCard";
+import TopicCard from "../components/TopicCard";
+import PerformanceChart from "../components/PerformanceChart";
+import InterviewHistory from "../components/InterviewHistory";
 
 function Dashboard() {
 
   const [progress, setProgress] = useState(null);
+
+  const [dashboard, setDashboard] = useState(null);
+
   const [history, setHistory] = useState([]);
 
+  const loadDashboard = async () => {
+    try {
+      const [progressRes, dashboardRes, historyRes] = await Promise.all([
+        api.get("/progress"),
+        api.get("/dashboard"),
+        api.get("/history"),
+      ]);
+      setProgress(progressRes.data);
+      setDashboard(dashboardRes.data);
+      setHistory(historyRes.data);
+    } catch (err) {
+      console.error("Unable to load dashboard", err);
+    }
+  };
+
   useEffect(() => {
-    fetchDashboard();
+    loadDashboard();
   }, []);
 
-  const fetchDashboard = async () => {
+  const downloadReport = async () => {
+    try {
+      const response = await api.get("/download-report", {
+        responseType: "blob",
+      });
+      const contentType = response.headers["content-type"] || "";
+      if (!contentType.includes("application/pdf")) {
+        const text = await new Response(response.data).text();
+        throw new Error(text || "Unable to download report.");
+      }
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "AI_Career_Report.pdf");
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Download report failed", err);
+      alert(err.message || "Unable to download report. Please try again.");
+    }
+  };
+
+  const clearHistory = async () => {
+    if (!window.confirm("Clear all interview history? This cannot be undone.")) {
+      return;
+    }
 
     try {
-
-      const progressRes = await axios.get(
-        "http://localhost:8000/progress"
-      );
-
-      const historyRes = await axios.get(
-        "http://localhost:8000/history"
-      );
-
-      setProgress(progressRes.data);
-      setHistory(historyRes.data);
-
+      await api.delete("/clear-history");
+      await loadDashboard();
     } catch (err) {
-
-      console.error(err);
-
+      console.error("Clear history failed", err);
+      alert("Unable to clear history. Please try again.");
     }
   };
 
-  const getScoreClass = (score) => {
+  if (!progress || !dashboard)
 
-    if (score >= 7) {
-      return "score-good";
-    }
-
-    if (score >= 4) {
-      return "score-average";
-    }
-
-    return "score-poor";
-  };
+    return <h2>Loading Dashboard...</h2>;
 
   return (
 
     <div className="dashboard-container">
 
-      <h1>📊 Interview Dashboard</h1>
+      <h1>📊 Career Dashboard</h1>
 
-      {progress && (
+      <CareerScore
 
-        <div className="stats-grid">
+        resumeScore={85}
 
-          <div className="stat-card">
+        interviewScore={progress.average_score}
 
-            <h3>Total Questions</h3>
+      />
 
-            <h2>
-              {progress.total_questions}
-            </h2>
+      <div className="stats-grid">
 
-          </div>
+        <StatCard
 
-          <div className="stat-card">
+          title="Resume Score"
 
-            <h3>Average Score</h3>
+          value="85%"
 
-            <h2>
-              {progress.average_score}
-            </h2>
+          icon="📄"
 
-          </div>
+        />
 
-          <div className="stat-card">
+        <StatCard
 
-            <h3>Weak Topics</h3>
+          title="Interview Avg"
 
-            <p>
-              {progress.weak_topics?.join(", ")}
-            </p>
+          value={progress.average_score}
 
-          </div>
+          icon="🎯"
 
-        </div>
+        />
 
-      )}
+        <StatCard
 
-      <div className="history-card">
+          title="Questions"
 
-        <h2>🧠 Interview History</h2>
+          value={progress.total_questions}
 
-        <table className="history-table">
+          icon="❓"
 
-          <thead>
+        />
 
-            <tr>
+        <StatCard
 
-              <th>ID</th>
+          title="Best Topic"
 
-              <th>Role</th>
+          value={dashboard.best_topic || "-"}
 
-              <th>Question</th>
+          icon="🏆"
 
-              <th>Score</th>
-
-              <th>Topic</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {history.map((item) => (
-
-              <tr key={item.id}>
-
-                <td>{item.id}</td>
-
-                <td>{item.role}</td>
-
-                <td>{item.question}</td>
-
-                <td
-                  className={
-                    getScoreClass(item.score)
-                  }
-                >
-                  {item.score}/10
-                </td>
-
-                <td>{item.topic}</td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
+        />
 
       </div>
+
+      <PerformanceChart
+
+        scores={dashboard.recent_scores}
+
+      />
+
+      <div className="topic-grid">
+
+        <TopicCard
+
+          title="💪 Strong Topics"
+
+          topics={progress.strong_topics}
+
+          color="green"
+
+        />
+
+        <TopicCard
+
+          title="📉 Weak Topics"
+
+          topics={progress.weak_topics}
+
+          color="red"
+
+        />
+
+      </div>
+
+      <div className="dashboard-actions">
+        <button className="button button-secondary" onClick={downloadReport}>
+          Download report
+        </button>
+        <button className="button button-danger" onClick={clearHistory}>
+          Clear history
+        </button>
+      </div>
+
+      <InterviewHistory
+
+        history={history}
+
+      />
 
     </div>
 
   );
+
 }
 
 export default Dashboard;

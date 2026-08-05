@@ -1,7 +1,41 @@
+from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, Integer, String, ForeignKey
+
+Base = declarative_base()
+
+
+# ==========================
+# User Table
+# ==========================
+
+class User(Base):
+
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    username = Column(String, unique=True, index=True)
+
+    email = Column(String, unique=True, index=True)
+
+    hashed_password = Column(String)
+
+    interviews = relationship(
+        "InterviewResult",
+        back_populates="user",
+        cascade="all, delete"
+    )
+
+
+# ==========================
+# Interview Table
+# ==========================
+
 from sqlalchemy.orm import declarative_base
 from sqlalchemy import Column, Integer, String
 
 Base = declarative_base()
+
 
 class InterviewResult(Base):
 
@@ -9,8 +43,20 @@ class InterviewResult(Base):
 
     id = Column(Integer, primary_key=True, index=True)
 
+    user_id = Column(Integer)
+
+    interview_id = Column(String)
+
     role = Column(String)
+
+    difficulty = Column(String)
+
+    question_number = Column(Integer)
+
+    total_questions = Column(Integer)
+
     question = Column(String)
+
     answer = Column(String)
 
     score = Column(Integer)

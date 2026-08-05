@@ -1,219 +1,49 @@
 import { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../api";
 import "./ResumeAnalysis.css";
+import UploadCard from "../components/UploadCard";
+import ResumeScoreCard from "../components/ResumeScoreCard";
+import SkillsCard from "../components/SkillsCard";
+import MissingSkillsCard from "../components/MissingSkillsCard";
+import RoadmapCard from "../components/RoadmapCard";
 
 function ResumeAnalysis() {
-
   const navigate = useNavigate();
-
   const [file, setFile] = useState(null);
   const [role, setRole] = useState("AI Engineer");
   const [analysis, setAnalysis] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const analyzeResume = async () => {
-
-    if (!file) {
-      alert("Please select a PDF");
-      return;
-    }
-
+    if (!file) { setError("Choose a PDF resume before running an analysis."); return; }
+    setLoading(true); setError("");
     try {
-
-      setLoading(true);
-
-      const formData = new FormData();
-
-      formData.append("file", file);
-      formData.append("role", role);
-
-      const response = await axios.post(
-        "http://localhost:8000/analyze-resume",
-        formData
-      );
-
+      const formData = new FormData(); formData.append("file", file); formData.append("role", role);
+      const response = await api.post("/analyze-resume", formData);
       setAnalysis(response.data);
-
-      console.log(response.data);
-
-    } catch (error) {
-
-      console.error(error);
-
-      alert("Failed to analyze resume");
-
-    } finally {
-
-      setLoading(false);
-
-    }
+    } catch { setError("We couldn’t analyze the resume. Check that the API is running and try again."); }
+    finally { setLoading(false); }
   };
 
-  return (
-    <div className="resume-container">
-
-      <div className="hero">
-
-        <h1>🚀 AI Career Coach</h1>
-
-        <p>
-          Upload your resume and get:
-        </p>
-
-        <ul>
-          <li>Skill Analysis</li>
-          <li>Skill Gap Detection</li>
-          <li>Learning Roadmap</li>
-          <li>Mock Interview Preparation</li>
-        </ul>
-
-        <div className="input-group">
-
-          <input
-            type="file"
-            onChange={(e) => setFile(e.target.files[0])}
-          />
-
-        </div>
-
-        <div className="input-group">
-
-          <input
-            type="text"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            placeholder="Target Role"
-          />
-
-        </div>
-
-        <button
-          className="analyze-btn"
-          onClick={analyzeResume}
-        >
-          Analyze Resume
-        </button>
-
-        <br /><br />
-
-        {loading && (
-          <p>
-            Analyzing Resume...
-          </p>
-        )}
-
-        <p>
-          Selected File: {file?.name}
-        </p>
-
-        <p>
-          Target Role: {role}
-        </p>
-
-      </div>
-
-      {analysis && (
-
-        <div>
-
-          <h2>Extracted Skills</h2>
-
-          <div className="skills-container">
-
-            {analysis.analysis.skills.map(
-              (skill, index) => (
-
-                <span
-                  key={index}
-                  className="skill-tag"
-                >
-                  {skill}
-                </span>
-
-              )
-            )}
-
-          </div>
-
-          <hr />
-
-          <h2>Missing Skills</h2>
-
-          <div className="skills-container">
-
-            {analysis.skill_gap.missing_skills.map(
-              (skill, index) => (
-
-                <span
-                  key={index}
-                  className="missing-tag"
-                >
-                  {skill}
-                </span>
-
-              )
-            )}
-
-          </div>
-
-          <hr />
-
-          <h2>Learning Roadmap</h2>
-
-          {Object.entries(
-            analysis.roadmap
-          ).map(([week, data]) => (
-
-            <div
-              key={week}
-              className="roadmap-card"
-            >
-
-              <h3>
-                {week} - {data.skill}
-              </h3>
-
-              <ul>
-
-                {data.topics.map(
-                  (topic, i) => (
-
-                    <li key={i}>
-                      {topic}
-                    </li>
-
-                  )
-                )}
-
-              </ul>
-
-            </div>
-
-          ))}
-
-          <br />
-
-          <button
-            className="start-btn"
-            onClick={() =>
-              navigate(
-                "/interview",
-                {
-                  state: { role }
-                }
-              )
-            }
-          >
-            Start Interview
-          </button>
-
-        </div>
-
-      )}
-
-    </div>
-  );
+  return <main className="page-shell resume-container">
+    <section className="resume-hero">
+      <p className="eyebrow">Career intelligence, made practical</p>
+      <h1 className="page-title">Turn your resume into a clear career plan.</h1>
+      <p className="page-subtitle">Get an instant skills assessment, tailored learning roadmap, and focused interview practice for the role you want next.</p>
+      <div className="trust-row"><span>✓ Personalized skill gap analysis</span><span>✓ Role-specific roadmap</span><span>✓ AI interview coaching</span></div>
+    </section>
+    <UploadCard file={file} role={role} setRole={setRole} setFile={setFile} analyzeResume={analyzeResume} loading={loading} />
+    {error && <p className="form-error" role="alert">{error}</p>}
+    {analysis && <section className="analysis-results" aria-live="polite">
+      <div className="results-header"><div><p className="eyebrow">Your assessment</p><h2>Here’s where to focus next</h2></div><span className="ready-tag">Analysis complete</span></div>
+      <ResumeScoreCard missingSkills={analysis.skill_gap?.missing_skills || []} />
+      <SkillsCard skills={analysis.analysis?.skills || []} />
+      <MissingSkillsCard skills={analysis.skill_gap?.missing_skills || []} />
+      <RoadmapCard roadmap={analysis.roadmap || {}} />
+      <div className="interview-cta"><div><h2>Ready to put this into practice?</h2><p>Start a tailored mock interview for {role}.</p></div><button className="button" onClick={() => navigate("/interview", { state: { role } })}>Start interview practice →</button></div>
+    </section>}
+  </main>;
 }
-
 export default ResumeAnalysis;
