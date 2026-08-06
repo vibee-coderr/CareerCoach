@@ -4,10 +4,6 @@ from sqlalchemy import Column, Integer, String, ForeignKey
 Base = declarative_base()
 
 
-# ==========================
-# User Table
-# ==========================
-
 class User(Base):
 
     __tablename__ = "users"
@@ -27,23 +23,16 @@ class User(Base):
     )
 
 
-# ==========================
-# Interview Table
-# ==========================
-
-from sqlalchemy.orm import declarative_base
-from sqlalchemy import Column, Integer, String
-
-Base = declarative_base()
-
-
 class InterviewResult(Base):
 
     __tablename__ = "interview_results"
 
     id = Column(Integer, primary_key=True, index=True)
 
-    user_id = Column(Integer)
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id")
+    )
 
     interview_id = Column(String)
 
@@ -62,3 +51,8 @@ class InterviewResult(Base):
     score = Column(Integer)
 
     topic = Column(String)
+
+    user = relationship(
+        "User",
+        back_populates="interviews"
+    )
